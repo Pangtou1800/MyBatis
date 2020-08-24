@@ -938,7 +938,11 @@ SELECT|sys.sys_config:null
       <Position>4</Position>
       <DataType>varchar(100)|0s</DataType>
     </column>
-    <key id="293" parent="288" name="PRIMARY">
+    <column id="293" parent="288" name="login_account">
+      <Position>5</Position>
+      <DataType>varchar(20)|0s</DataType>
+    </column>
+    <key id="294" parent="288" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>id</ColNames>
       <Primary>1</Primary>

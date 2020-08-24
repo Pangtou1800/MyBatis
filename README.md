@@ -70,3 +70,160 @@
         3.向SqlSession对象获取Dao的实例
 
         4.执行Dao的方法即可
+
+    2.5　细节
+
+        1.配置文件
+            增删改不用写返回值类型，MyBatis会自动判断
+            如果是数字则返回影响行数，如果是boolean，则返回 行数!=0
+
+        2.获取的Dao是MyBatis自动创建的动态代理对象
+
+        3.SqlSessionFactory和SqlSession对象
+
+            ·Factory只创建一次即可
+            ·SqlSession相当于Connection，和数据库的每一次会话都应该创建一个新的SqlSession
+
+## 第三节 全局配置文件
+
+    3.1 作用
+
+        指导MyBatis正确运行的全局设置
+
+    3.2 内容一览
+
+        configuration
+            -properties 属性
+            -settings 设置 ☆
+            -typeAlias 类型命名
+            -typeHandlers 类型处理器
+            -objectFactory 对象工厂
+            -plugins 插件
+            -environments 环境
+                -environment 环境变量
+                    -transactionManager 事务管理器
+                    -dataSource 数据源
+            -databaseIdProvider 数据库厂商标识
+            -mappers 映射器 ☆
+
+    3.3 properties
+
+        类似于Spring中的<context:property-placeholder>，引用外部配置文件
+
+        -resource : 从类路径下引用资源
+        -url ：从磁盘或网络路径引用资源
+
+    3.4 settings ☆
+
+        极其重要的配置内容，可以改变MyBatis的各种行为
+
+        演示：
+            mapUnderscoreToCamelCase - 将下划线和驼峰规则自动匹配
+
+            <settings>
+                <setting name="mapUnderscoreToCamelCase" value="true"/>
+            </settings>
+
+    3.5 typeAlias 
+
+        1.为类型起别名
+
+        <typeAliases>
+            <typeAlias type="pt.joja.bean.Employee" alias="Employee"/>
+        </typeAliases>
+
+        在SQL映射文件中就不用写全类名了 ※不写别名默认类名
+
+        2.批量起别名
+
+        <typeAliases>
+            <package name="pt.joja.bean"/>
+        </typeAliases>
+
+        3.别名就是类名
+
+        加@Alias注解也可以 @Alias("emp")
+
+        ※推荐：不要使用别名
+
+        4.MyBatis已经为常用Java类起好了别名
+
+    3.5 typeHandlers
+
+        MyBatis向Statement中设置参数或是从ResultSet中取值时，都是用各种typeHandler来进行转换
+
+        可以
+            ·实现org.apache.ibatis.type.TypeHandler接口
+            ·继承org.apache.ibatis.type.BaseTypeHandler类
+        来自定义类型处理器
+
+        然后加入即可
+        <handlers>
+            <handler>..
+
+        扩展：日期类型的处理
+
+            Java8 完全实现了JSR310时间日期规范，关于这些新增日期类型的处理器，
+            MyBatis在3.4版本后也会自动添加
+
+    3.6 objectFactory
+
+        将查询结果封装为对象 ※没人用
+
+    3.7 plugins
+
+        插件师MyBatis的一个强大功能
+
+        插件通过动态代理机制，可以介入四大对象的任何一个方法的执行
+
+        ·Executor
+        ·ParameterHandler
+        ·ResultSetHandler
+        ·StatementHandler
+
+    3.8 environments
+
+        <environments default="env1">
+            <environment id="env1">
+                <transactionManager type="">
+                <dataSource type="">
+            <environment id="env2">
+                <transactionManager type="">
+                <dataSource type="">
+
+        ※整合之后，数据源和事务管理都交由Spring来管理
+
+    3.9 databaseIdProvider
+
+        用来处理数据库移植
+
+        name - 数据库厂商的标识 MySQL,Oracle,SQL Server...
+        value - 别名
+
+        SQL映射文件默认是不区分数据库厂商的，配置上述元素之后，
+        为SQL映射文件的元素添加databaseId属性即可
+        ·精确匹配 > 默认
+
+        ※一般是没有数据库移植的需要的
+    
+    3.10 mappers ☆
+
+        注册SQL映射文件
+
+        <mappers>
+            <mapper>
+                -resource：类路径下寻找SQL映射文件
+                -url：磁盘或者网络路径寻找SQL映射文件
+                -class：
+                    1.Dao接口全类路径 - xml放在Dao接口相同目录下，且文件名一致
+                    2.SQL文直接作为注解值表在Dao接口的方法上
+                        @Select("select * from t_employee where id = #{id}")
+                        public Employee getEmpById(Integer id);
+            <package>
+                -name：dao包名，但是所有配置文件都要放到Dao接口同路径下
+
+## 第四节 SQL映射文件
+
+    4.1 作用
+
+        相当于Dao接口的实现描述

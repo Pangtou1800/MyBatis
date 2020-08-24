@@ -10,16 +10,6 @@ public class Employee {
 
     private String email;
 
-    private String loginAccount;
-
-    public String getLoginAccount() {
-        return loginAccount;
-    }
-
-    public void setLoginAccount(String loginAccount) {
-        this.loginAccount = loginAccount;
-    }
-
     public Integer getId() {
         return id;
     }
@@ -59,7 +49,6 @@ public class Employee {
                 ", empName='" + empName + '\'' +
                 ", gender=" + gender +
                 ", email='" + email + '\'' +
-                ", loginAccount='" + loginAccount + '\'' +
                 '}';
     }
 }

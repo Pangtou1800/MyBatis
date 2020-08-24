@@ -2,25 +2,40 @@
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
 
+    <properties resource="dbconfig.properties"/>
+    
     <settings>
-        <!-- 开启log4j来记录日志 -->
-        <setting name="logImpl" value="log4j"/>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
     </settings>
+
+    <!--<typeAliases>
+        <typeAlias type="pt.joja.bean.Employee" alias="Employee"/>
+        <package name="pt.joja.bean"/>
+    </typeAliases>-->
 
     <environments default="development">
         <environment id="development">
             <transactionManager type="JDBC"/>
             <dataSource type="POOLED">
-                <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
-                <property name="url" value="jdbc:mysql://localhost:3306/mybatis?serverTimezone=UTC"/>
-                <property name="username" value="root"/>
-                <property name="password" value="root"/>
+                <property name="driver" value="${mybatis.driver}"/>
+                <property name="url" value="${mybatis.url}"/>
+                <property name="username" value="${mybatis.username}"/>
+                <property name="password" value="${mybatis.password}"/>
             </dataSource>
         </environment>
     </environments>
 
+    <databaseIdProvider type="DB_VENDOR">
+        <property name="MySQL" value="mysql"/>
+        <property name="Oracle" value="oracle"/>
+        <property name="SQL Server" value="sqlServer"/>
+    </databaseIdProvider>
+    
     <mappers>
-        <mapper resource="EmployeeDao.xml"/>
+<!--        <mapper resource="EmployeeDao.xml"/>-->
+        <mapper class="pt.joja.dao.EmployeeDao"/>
+        <mapper class="pt.joja.dao.EmployeeDaoAnno"/>
+        <package name="pt.joja.dao"/>
     </mappers>
 
 </configuration>
