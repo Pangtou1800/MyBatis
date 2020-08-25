@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="SqlDialectMappings">
-    <file url="file://$PROJECT_DIR$/JojaBarn/src/main/resources/EmployeeDao.xml" dialect="GenericSQL" />
-    <file url="file://$PROJECT_DIR$/JojaWarehouse/src/main/resources/EmployeeDao.xml" dialect="GenericSQL" />
+    <file url="file://$PROJECT_DIR$/JojaWarehouse/src/main/resources/pt/joja/dao/EmployeeDao.xml" dialect="MySQL" />
+    <file url="PROJECT" dialect="MySQL" />
   </component>
 </project>

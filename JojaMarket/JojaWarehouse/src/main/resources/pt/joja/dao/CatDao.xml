@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pt.joja.dao.CatDao">
+    <select id="getCatById" resultType="pt.joja.bean.Cat" resultMap="catMapping">
+        select *
+        from cat
+        where id = #{id}
+    </select>
+    <resultMap id="catMapping" type="pt.joja.bean.Cat">
+        <id column="id" property="id"/>
+        <result column="c_name" property="name"/>
+        <result column="c_age" property="age"/>
+        <result column="c_gender" property="gender"/>
+    </resultMap>
+</mapper>

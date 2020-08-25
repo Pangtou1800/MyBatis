@@ -227,3 +227,118 @@
     4.1 作用
 
         相当于Dao接口的实现描述
+
+    4.2 内容一览
+
+        mapper
+            -cache 缓存相关
+            -cache-ref 缓存相关
+            -delete update insert select
+            -parameterMap 参数表，原本用作复杂参数映射，现在被其他特性取代
+            -resultMap 结果映射，自定义结果集的封装规则
+            -sql 抽取可重用SQL
+
+    4.3 增删改
+
+        insert/update/delete
+            -id 命名空间中唯一标识符：方法名 ※可见MyBatis不支持方法重载
+            -parameterType 会自动根据TypeHandler推断，一般省略
+            -flushCache 缓存相关
+            -timeout 事务超时，整合后由Spring来控制
+            -statementType
+                ·STATEMENT 原生Statement
+                ·PREPARED 原生PreparedStatement ※默认
+                ·CALLABLE 调用存储过程
+            -useGeneratedKeys 使用数据库的自增Id
+            -keyProperty 唯一标记一个属性
+            -keyColumn 指定主键列，仅对特定数据库生效，一般不管
+            -databaseId 指定数据库别名
+
+            <insert id="insertEmployee" useGeneratedKeys="true" keyProperty="id">
+
+            即可在调用insertEmployee后，把数据库生成的自增id存入对象中
+
+            在不支持主键自增的数据库如Oracle中，可以使用"子查询"
+            <insert>
+                <selectKey order="BEFORE" keyProperty="id" resultType="int">
+                    select max(id) + 1 from t_employee
+                </selectKey>
+                ...
+
+    4.4 查询
+
+        1.传参到底能传哪些类型？
+            ·单个参数
+                基本类型：
+                    #{随便}
+                POJO：
+                    #{属性名}
+            ·多个参数
+                取值#{arg0}, #{arg1}或#{param1}, #{param2}
+
+                因为多个参数时MyBatis会把参数封装进一个Map中，key默认就是上面的
+
+                可以在Dao方法里为参数打注解@Param("id")来规定键值　→ 推荐
+
+                多个参数是POJO或Map时，到达该参数之后再 . 取值即可
+
+        2.取值时可以设置一些规则 - #{key/属性名}
+
+            id=#{id,jdbcType=INTEGER}
+
+            javaType, jdbcType, mode, numericScale...
+
+            一般都不用指定
+
+            举例：插入null时，MySQL可以支持，但Oracle不会分析null的类型，需要明确指定
+
+        3.两种取值方式 - #{属性名} vs ${属性名}
+
+            where id = ${id} -> SQL: where id = 1
+            where id = #{id} -> SQL: where id = ?
+
+            #{} : 参数为预编译形式，值后来写入  -> 推荐，可以避免SQL注入
+            ${} : 不是预编译形式，直接SQL拼串
+
+            但是，SQL只有参数位置可以预编译，
+            要动态改变表名、字段名等就可以使用${}
+
+            select log_data from log_${date}
+
+        4.查询集合
+
+            > List
+                Dao接口方法返回值为List即可，SQL映射文件无需做出任何修改
+
+            > Map
+                <select id="getEmpByIdToMap" resultType="map">
+                键是列名
+
+            > Map<key, POJO>
+                <select id="getAllEmpsToMap" resultType="pt.joja.bean.Employee">
+                    ！type一定是被封装的类型，写了map之后会得到Map<key, Map<,>>
+
+                @MapKey("id")  <- key的字段 ※就是这个标记提示MyBatis将多个对象封装为Map
+                public Map<String, Employee> getAllEmpsToMap();
+
+        5.列名和bean属性不对应时
+
+            > 开启驼峰命名法
+
+            > 起别名
+                select id, c_name as name, c_age as age, c_gender as gender
+
+            > 自定义结果集
+                <mapper>
+                    <resultMap>
+                        -id: 唯一标识
+                        -type: POJO类名
+                        <id>
+                            -column: 指定主键列
+                            -property：指定POJO的主键列对应属性
+                        <result>
+                            -column: 指定列
+                            -property：指定POJO的对应属性
+                        ...
+                    <select resultMap="mappingId">
+                        ...

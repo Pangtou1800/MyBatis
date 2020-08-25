@@ -1,8 +1,59 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="pt.joja.dao.EmployeeDao">
+    <select id="getAllEmps" resultType="pt.joja.bean.Employee">
+        select *
+        from t_employee;
+    </select>
+    <select id="getEmpByIdToMap" resultType="map">
+        select *
+        from t_employee
+        where id = #{id}
+    </select>
     <!-- public Employee getEmpById(Integer id); -->
     <select id="getEmpById" resultType="pt.joja.bean.Employee">
-        select * from t_employee where id = #{id}
+        select *
+        from t_employee
+        where id = #{id}
     </select>
+    <select id="getEmpByIdAndName" resultType="pt.joja.bean.Employee">
+        select *
+        from t_employee
+        where id = #{id}
+          and empname = #{empName}
+    </select>
+    <select id="getEmpByIdAndName2" resultType="pt.joja.bean.Employee">
+        select *
+        from t_${tableName}
+        where id = ${id}
+          and empname = #{empName}
+    </select>
+    <select id="getAllEmpsToMap" resultType="pt.joja.bean.Employee">
+        select *
+        from t_employee
+    </select>
+    <update id="updateEmployee">
+        update t_employee
+        set empName       = #{empName},
+            gender        = #{gender},
+            email         = #{email},
+            login_account = #{loginAccount}
+        where id = #{id}
+    </update>
+    <delete id="deleteEmployee">
+        delete
+        from t_employee
+        where id = #{id}
+    </delete>
+    <insert id="insertEmployee" useGeneratedKeys="true" keyProperty="id">
+        insert into t_employee (empName, gender, email, login_account)
+        values (#{empName}, #{gender}, #{email}, #{loginAccount})
+    </insert>
+    <insert id="insertEmployee2">
+        <selectKey order="BEFORE" keyProperty="id" resultType="int">
+            select max(id) + 1 from t_employee
+        </selectKey>
+        insert into t_employee (id, empName, gender, email, login_account)
+        values(#{id}, #{empName}, #{gender}, #{email}, #{loginAccount})
+    </insert>
 </mapper>
