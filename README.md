@@ -342,3 +342,36 @@
                         ...
                     <select resultMap="mappingId">
                         ...
+
+        6.级联查询时
+
+            > 级联属性 1:1
+
+                <resultMap id="keyMapper1" type="pt.joja.bean.Key">
+                    <id column="key_id" property="id"/>
+                    <result column="key_name" property="keyName"/>
+                    <result column="lock_id" property="lock.id"/>
+                    <result column="lock_name" property="lock.lockName"/>
+                </resultMap>
+
+            > 1:1 <association> ※MyBatis推荐
+
+                <resultMap id="keyMapper2" type="pt.joja.bean.Key">
+                    <id column="key_id" property="id"/>
+                    <result column="key_name" property="keyName"/>
+                    <association property="lock" javaType="pt.joja.bean.Lock">
+                        <id column="lock_id" property="id"/>
+                        <result column="lock_name" property="lockName"/>
+                    </association>
+                </resultMap>
+
+            > 1:n <collection>
+
+                <resultMap id="lockMapper" type="pt.joja.bean.Lock">
+                    <id property="id" column="lock_id"/>
+                    <result property="lockName" column="lock_name"/>
+                    <collection property="keys" ofType="pt.joja.bean.Key">
+                        <id property="id" column="key_id"/>
+                        <result property="keyName" column="key_name"/>
+                    </collection>
+                </resultMap>

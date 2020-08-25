@@ -920,53 +920,98 @@ SELECT|sys.sys_config:null
     </user>
     <table id="288" parent="6" name="cat"/>
     <table id="289" parent="6" name="t_employee"/>
-    <column id="290" parent="288" name="id">
+    <table id="290" parent="6" name="t_key"/>
+    <table id="291" parent="6" name="t_lock"/>
+    <column id="292" parent="288" name="id">
       <Position>1</Position>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
       <SequenceIdentity>null</SequenceIdentity>
     </column>
-    <column id="291" parent="288" name="c_name">
+    <column id="293" parent="288" name="c_name">
       <Position>2</Position>
       <DataType>varchar(50)|0s</DataType>
     </column>
-    <column id="292" parent="288" name="c_age">
+    <column id="294" parent="288" name="c_age">
       <Position>3</Position>
       <DataType>int|0s</DataType>
     </column>
-    <column id="293" parent="288" name="c_gender">
+    <column id="295" parent="288" name="c_gender">
       <Position>4</Position>
       <DataType>int|0s</DataType>
     </column>
-    <key id="294" parent="288" name="PRIMARY">
+    <key id="296" parent="288" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>id</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="295" parent="289" name="id">
+    <column id="297" parent="289" name="id">
       <Position>1</Position>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
       <SequenceIdentity>null</SequenceIdentity>
     </column>
-    <column id="296" parent="289" name="empname">
+    <column id="298" parent="289" name="empname">
       <Position>2</Position>
       <DataType>varchar(50)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="297" parent="289" name="gender">
+    <column id="299" parent="289" name="gender">
       <Position>3</Position>
       <DataType>int|0s</DataType>
     </column>
-    <column id="298" parent="289" name="email">
+    <column id="300" parent="289" name="email">
       <Position>4</Position>
       <DataType>varchar(100)|0s</DataType>
     </column>
-    <column id="299" parent="289" name="login_account">
+    <column id="301" parent="289" name="login_account">
       <Position>5</Position>
       <DataType>varchar(20)|0s</DataType>
     </column>
-    <key id="300" parent="289" name="PRIMARY">
+    <key id="302" parent="289" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <column id="303" parent="290" name="id">
+      <Position>1</Position>
+      <DataType>int|0s</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>null</SequenceIdentity>
+    </column>
+    <column id="304" parent="290" name="key_name">
+      <Position>2</Position>
+      <DataType>varchar(20)|0s</DataType>
+    </column>
+    <column id="305" parent="290" name="lock_id">
+      <Position>3</Position>
+      <DataType>int|0s</DataType>
+    </column>
+    <index id="306" parent="290" name="lock_key_fk">
+      <ColNames>lock_id</ColNames>
+      <Type>btree</Type>
+    </index>
+    <key id="307" parent="290" name="PRIMARY">
+      <NameSurrogate>1</NameSurrogate>
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+    </key>
+    <foreign-key id="308" parent="290" name="lock_key_fk">
+      <ColNames>lock_id</ColNames>
+      <RefTableName>t_lock</RefTableName>
+      <RefColNames>id</RefColNames>
+    </foreign-key>
+    <column id="309" parent="291" name="id">
+      <Position>1</Position>
+      <DataType>int|0s</DataType>
+      <NotNull>1</NotNull>
+      <SequenceIdentity>null</SequenceIdentity>
+    </column>
+    <column id="310" parent="291" name="lock_name">
+      <Position>2</Position>
+      <DataType>varchar(20)|0s</DataType>
+    </column>
+    <key id="311" parent="291" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>id</ColNames>
       <Primary>1</Primary>

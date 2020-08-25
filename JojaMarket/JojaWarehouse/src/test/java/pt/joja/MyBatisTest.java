@@ -7,9 +7,9 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Test;
 import pt.joja.bean.Cat;
 import pt.joja.bean.Employee;
-import pt.joja.dao.CatDao;
-import pt.joja.dao.EmployeeDao;
-import pt.joja.dao.EmployeeDaoAnno;
+import pt.joja.bean.Key;
+import pt.joja.bean.Lock;
+import pt.joja.dao.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -155,6 +155,28 @@ public class MyBatisTest {
 
         Cat cat = catDao.getCatById(2);
         System.out.println(cat);
+
+        sqlSession.close();
+    }
+
+    @Test
+    public void test11() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        KeyDao keyDao = sqlSession.getMapper(KeyDao.class);
+
+        Key key = keyDao.getKeyById(1);
+        System.out.println(key);
+
+        sqlSession.close();
+    }
+
+    @Test
+    public void test12() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        LockDao lockDao = sqlSession.getMapper(LockDao.class);
+
+        Lock lock = lockDao.getLockById(3);
+        System.out.println(lock);
 
         sqlSession.close();
     }

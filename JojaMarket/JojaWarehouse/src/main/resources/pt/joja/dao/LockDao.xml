@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pt.joja.dao.LockDao">
+    <resultMap id="lockMapper" type="pt.joja.bean.Lock">
+        <id property="id" column="lock_id"/>
+        <result property="lockName" column="lock_name"/>
+        <collection property="keys" ofType="pt.joja.bean.Key">
+            <id property="id" column="key_id"/>
+            <result property="keyName" column="key_name"/>
+        </collection>
+    </resultMap>
+    <resultMap id="lockMapper2" type="pt.joja.bean.Lock">
+        <id property="id" column="lock_id"/>
+        <result property="lockName" column="lock_name"/>
+        <collection property="keys" resultMap="simpleKeyMapper"/>
+    </resultMap>
+    <resultMap id="simpleKeyMapper" type="pt.joja.bean.Key">
+        <id property="id" column="key_id"/>
+        <result property="keyName" column="key_name"/>
+    </resultMap>
+
+    <select id="getLockById" resultType="pt.joja.bean.Lock" resultMap="lockMapper2">
+        select t_lock.id lock_id, t_lock.lock_name, t_key.id key_id, t_key.key_name
+        from t_lock
+                 left join t_key on t_lock.id = t_key.lock_id
+        where t_lock.id = 3;
+    </select>
+</mapper>
