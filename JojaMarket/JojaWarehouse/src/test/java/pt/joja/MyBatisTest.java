@@ -5,17 +5,12 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Test;
-import pt.joja.bean.Cat;
-import pt.joja.bean.Employee;
-import pt.joja.bean.Key;
-import pt.joja.bean.Lock;
+import pt.joja.bean.*;
 import pt.joja.dao.*;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MyBatisTest {
 
@@ -31,6 +26,77 @@ public class MyBatisTest {
         }
         sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
     }
+
+    @Test
+    public void test19() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        TeacherDao teacherDao = sqlSession.getMapper(TeacherDao.class);
+
+        Teacher teacher = new Teacher();
+        teacher.setId(1);
+        //teacher.setTeacherName("Laura");
+        teacher.setClassName("毛概");
+        teacherDao.updateTeacher(teacher);
+
+        sqlSession.commit();
+        sqlSession.close();
+    }
+
+    @Test
+    public void test18() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        TeacherDao teacherDao = sqlSession.getMapper(TeacherDao.class);
+
+        Teacher teacher = new Teacher();
+        //teacher.setId(0);
+        teacher.setTeacherName("%L%");
+        teacher.setBirthday(new Date());
+        List<Teacher> teacher2 = teacherDao.getTeacherByCond2(teacher);
+        System.out.println(teacher2);
+
+        sqlSession.close();
+    }
+
+    @Test
+    public void test17() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        TeacherDao teacherDao = sqlSession.getMapper(TeacherDao.class);
+
+        List<Integer> idList = null;
+        idList = Arrays.asList(1, 2);
+        List<Teacher> teacher2 = teacherDao.getTeacherByIdList(idList);
+        System.out.println(teacher2);
+
+        sqlSession.close();
+    }
+
+    @Test
+    public void test16() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        TeacherDao teacherDao = sqlSession.getMapper(TeacherDao.class);
+
+        Teacher teacher = new Teacher();
+        //teacher.setId(0);
+        teacher.setTeacherName("%L%");
+        teacher.setBirthday(new Date());
+        List<Teacher> teacher2 = teacherDao.getTeacherByCond(teacher);
+        System.out.println(teacher2);
+
+        sqlSession.close();
+    }
+
+    @Test
+    public void test15() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        TeacherDao teacherDao = sqlSession.getMapper(TeacherDao.class);
+
+        Teacher teacher = teacherDao.getTeacherById(2);
+        System.out.println(teacher);
+
+        sqlSession.close();
+    }
+
+
 
     @Test
     public void test() {
@@ -176,6 +242,36 @@ public class MyBatisTest {
         LockDao lockDao = sqlSession.getMapper(LockDao.class);
 
         Lock lock = lockDao.getLockById(3);
+        System.out.println(lock);
+
+        sqlSession.close();
+    }
+
+    @Test
+    public void test13() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        KeyDao keyDao = sqlSession.getMapper(KeyDao.class);
+
+        Key key = keyDao.getKeyByIdSimple(3);
+        System.out.println(key.getKeyName());
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(key);
+
+        sqlSession.close();
+    }
+
+    @Test
+    public void test14() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        LockDao lockDao = sqlSession.getMapper(LockDao.class);
+
+        Lock lock = lockDao.getLockByIdByStep(3);
         System.out.println(lock);
 
         sqlSession.close();

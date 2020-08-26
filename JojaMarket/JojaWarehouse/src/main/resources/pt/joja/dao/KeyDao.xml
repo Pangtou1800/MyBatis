@@ -15,12 +15,30 @@
             <result column="lock_name" property="lockName"/>
         </association>
     </resultMap>
+    <resultMap id="keyMapper3" type="pt.joja.bean.Key">
+        <id column="key_id" property="id"/>
+        <result column="key_name" property="keyName"/>
+        <association property="lock" column="lock_id" select="pt.joja.dao.LockDao.getLockByIdSimple"/>
+    </resultMap>
+
 
     <select id="getKeyById" resultType="pt.joja.bean.Key" resultMap="keyMapper2">
         select t_key.id key_id, t_key.key_name, t_key.lock_id lock_id, t_lock.lock_name
         from t_key
                  left join t_lock on t_key.lock_id = t_lock.id
         where t_key.id = #{id};
+    </select>
+
+    <select id="getKeyByIdSimple" resultMap="keyMapper3">
+        select *
+        from t_key
+        where id = #{id}
+    </select>
+
+    <select id="getKeysByLockId" resultType="pt.joja.bean.Key">
+        select *
+        from t_key
+        where lock_id = #{lockId}
     </select>
 
 </mapper>

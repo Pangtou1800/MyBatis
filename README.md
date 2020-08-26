@@ -375,3 +375,151 @@
                         <result property="keyName" column="key_name"/>
                     </collection>
                 </resultMap>
+
+        7.分步查询
+
+            目标：
+                1.Key key = keyDao.getKeyById(id)
+                2.Lock lock = lockDao.getLockById(id)
+
+            <resultMap id="keyMapper3" type="pt.joja.bean.Key">
+                <id column="key_id" property="id"/>
+                <result column="key_name" property="keyName"/>
+                <association property="lock" column="lock_id" select="pt.joja.dao.LockDao.getLockByIdSimple"/>
+            </resultMap>
+
+            多个参数时 column={key1=col1,key2=col2}
+
+        8. 按需加载
+
+            在分步查询的基础上开启全局按需加载策略即可
+
+            <setting name="lazyLoadingEnabled" value="true"/>
+            <setting name="aggressiveLazyLoading" value="false"/>
+
+            <mapper>
+                -fetchType="eager" / "lazy"可以单独制定
+
+            ※ 但还是推荐使用连接查询
+
+## 第五节 动态SQL
+
+    MyBatis非常强大的功能，简化SQL动态拼串操作
+
+    5.1 if
+
+        <if test=""> => OGNL表达式，基本上什么都支持
+
+    5.2 where
+
+        根据内容是否为空决定拼不拼where
+
+        <where>
+            <if test="id!=null">
+                id > #{id}
+            </if>
+            <if test="teacherName!=null &amp;&amp; !teacherName.equals(&quot;&quot;)">
+                and teacher_name like #{teacherName}
+            </if>
+            <if test="birthday!=null">
+                and birthday &lt; #{birthday}
+            </if>
+        </where>
+
+        where标签自动去除前方and
+
+    5.3 trim 强大
+
+        <trim>
+            -prefix : 不为空时加前缀
+            -prefixOverrides : 前缀为指定值时去除
+            -suffix ：不为空时加后缀
+            -suffixOverrides ：后缀为指定值时去除
+
+        <trim prefix="where" prefixOverrides="and" suffix="" suffixOverrides="">
+
+    5.4 foreach
+
+        <if test="idList!=null and idList.size()>0">
+            id in
+            <foreach collection="idList" item="idItem" index="" open="(" close=")" separator=",">
+                #{idItem}
+            </foreach>
+        </if>
+
+        ※集合参数在Dao中配合@Param使用
+        ※index Map时就是key
+
+    5.5 choose - when - otherwise
+
+        分支选择
+
+    5.6 用在update中
+
+        <set>
+            <if test="teacherName!=null and !teacherName.equals('')">
+                teacher_name = #{teacherName}
+            </if>
+            <if test="className!=null and !className.equals('')">
+                ,class_name = #{className},
+            </if>
+            <if test="address!=null and !address.equals('')">
+                address = #{address},
+            </if>
+            <if test="birthday!=null">
+                birthday = #{birthday}
+            </if>
+        </set>
+
+        会去前后逗号
+
+    5.7 OGNL语言 - 对象图导航语言
+
+        例：
+            Person
+                -lastName
+                -email
+                -Address
+                    -city
+                    -province
+                    -Street
+                        -adminName
+                        -info
+                        -peopleAmount
+                -getName()
+
+        属性：person.lastName
+        方法：person.getName()
+        静态属性：@Person@Amount
+        静态方法：@Person@nextId()
+        构造：new Person('admin') - 不区分' "
+        运算符：+ - * / %
+        逻辑： in, not in, > >= < <= == !=   => xml中的话要转义
+
+        集合还有伪属性
+
+        List, Set, Map : size, isEmpty
+        List, Set      : iterator
+        Map            : keys, values
+        Iterator       : next, hasNext
+
+        在MyBatis中，参数以外还有两个默认变量可以用来判断：
+            
+            _parameter - 传入的参数整体
+                1.单个参数：就是那个参数
+                2.多个参数：封装后的Map
+
+            _datebaseId - 数据库标识字符
+
+    5.8 bind 变量预加工
+
+        <bind name="_name" value="'%'+name+'%'"/>
+
+    5.9 include 通用sql语句
+
+        <sql id="selectTeacher">select * from t_teacher</sql>
+        <select id="getTeacherById" resultMap="teacherMap">
+            <include refid="selectTeacher"/>
+            where id = #{id}
+        </select>
+

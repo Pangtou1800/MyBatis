@@ -18,11 +18,28 @@
         <id property="id" column="key_id"/>
         <result property="keyName" column="key_name"/>
     </resultMap>
+    <resultMap id="myLockStepMapper" type="pt.joja.bean.Lock">
+        <id property="id" column="id"/>
+        <result property="lockName" column="lock_name"/>
+        <collection property="keys" column="id" select="pt.joja.dao.KeyDao.getKeysByLockId"/>
+    </resultMap>
 
     <select id="getLockById" resultType="pt.joja.bean.Lock" resultMap="lockMapper2">
         select t_lock.id lock_id, t_lock.lock_name, t_key.id key_id, t_key.key_name
         from t_lock
                  left join t_key on t_lock.id = t_key.lock_id
         where t_lock.id = 3;
+    </select>
+
+    <select id="getLockByIdSimple" resultType="pt.joja.bean.Lock">
+        select *
+        from t_lock
+        where id = #{id}
+    </select>
+
+    <select id="getLockByIdByStep" resultMap="myLockStepMapper">
+        select *
+        from t_lock
+        where id = #{id}
     </select>
 </mapper>
