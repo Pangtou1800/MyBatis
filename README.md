@@ -612,6 +612,7 @@
             实装Cache接口，在方法中连接到专业的缓存库
 
         
+
         Client -> CachingExecutor <=> [decorate Executor] <=> database
                         ||                  ||
                         ||              Local Cache
@@ -644,3 +645,99 @@
             <cache-ref namespace="">
 
 ## 第七节 SSM整合
+
+    7.1 导包
+
+        1.Spring
+
+            [IOC核心]
+                core
+                beans
+                context
+                expression
+                
+            [AOP核心]
+                aop
+                aspects
+
+            [AOP增强]
+                cglib
+                aopalliance
+                aspectj
+
+            [jdbc核心]
+                jdbc
+                orm
+                tx
+
+            [依赖]
+                commons-logging    
+
+        2.SpringMVC
+
+            [Web核心]
+                web
+                webmvc
+
+            [上传下载]
+                commons-fileupload
+                commons-io
+            
+            [jsp标准标签库]
+                jstl
+                standard
+
+            [Hibernate校验]
+                hibernate-validator
+                hibernate-validator-annotation
+
+            [Hibernate校验依赖]
+                classmate
+                jboss-logging
+                validation-api
+
+            [json]
+                jackson-core
+                jackson-databind
+                jackson-annotation
+            
+            [日志]
+                log4j        
+
+        3. MyBatis
+
+            [MyBatis]
+                mybatis
+
+            [jdbc driver]
+                xxx
+
+            [ehcache]
+                ehcache
+
+    7.2 写配置
+
+        1.Spring
+
+        2.SpringMVC
+
+        3.MyBatis
+
+            ·导入整合包 - 将Dao的实现加入容器中
+                mybatis-spring
+
+            <!-- 2.配置MyBatis操作数据库 -->
+            <!-- 2.1 sqlSessionFactory加入容器 -->
+            <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+                <property name="configLocation" value="classpath:mybatis/mybatis-config.xml"/>
+                <property name="dataSource" ref="dataSource"/>
+                <property name="mapperLocations" value="classpath:mybatis/mapper/*.xml"/>
+            </bean>
+            <!-- 2.2 Dao实例加入容器-->
+            <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+                <property name="basePackage" value="pt.joja.dao"/>
+            </bean>
+
+        4.其他小框架
+
+    7.3 测试

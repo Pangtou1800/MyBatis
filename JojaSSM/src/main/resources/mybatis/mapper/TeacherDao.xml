@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pt.joja.dao.TeacherDao">
+
+    <cache/>
+
+    <resultMap id="teacherMap" type="pt.joja.bean.Teacher">
+        <id property="id" column="id"/>
+        <result property="teacherName" column="teacher_name"/>
+        <result property="className" column="class_name"/>
+        <result property="address" column="address"/>
+        <result property="birthday" column="birthday"/>
+    </resultMap>
+
+    <sql id="selectTeacher">select * from t_teacher</sql>
+    <select id="getTeacherById" resultMap="teacherMap">
+        <include refid="selectTeacher"/>
+        where id = #{id}
+    </select>
+
+    <select id="getTeacherByCond" resultMap="teacherMap">
+        select * from t_teacher
+        <trim prefix="where" prefixOverrides="and" suffix="" suffixOverrides="">
+            <if test="id!=null">
+                id > #{id}
+            </if>
+            <if test="teacherName!=null &amp;&amp; !teacherName.equals(&quot;&quot;)">
+                and teacher_name like #{teacherName}
+            </if>
+            <if test="birthday!=null">
+                and birthday &lt; #{birthday}
+            </if>
+        </trim>
+    </select>
+
+    <select id="getTeacherByIdList" resultMap="teacherMap">
+        select * from t_teacher
+        <where>
+            <if test="idList!=null and idList.size()>0">
+                id in
+                <foreach collection="idList" item="idItem" index="" open="(" close=")" separator=",">
+                    #{idItem}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+    <select id="getTeacherByCond2" resultMap="teacherMap">
+        select * from t_teacher
+        <where>
+            <choose>
+                <when test="id!=null">
+                    id = #{id}
+                </when>
+                <when test="teacherName!=null and !teacherName.equals('')">
+                    teacher_name like #{teacherName}
+                </when>
+                <when test="birthday != null">
+                    birthday &lt; #{birthday}
+                </when>
+                <otherwise>
+                    1=1
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+    <update id="updateTeacher">
+        update t_teacher
+        <set>
+            <if test="teacherName!=null and !teacherName.equals('')">
+                teacher_name = #{teacherName}
+            </if>
+            <if test="className!=null and !className.equals('')">
+                ,class_name = #{className},
+            </if>
+            <if test="address!=null and !address.equals('')">
+                address = #{address},
+            </if>
+            <if test="birthday!=null">
+                birthday = #{birthday}
+            </if>
+        </set>
+        <where>
+            <choose>
+                <when test="id!=null">
+                    id = #{id}
+                </when>
+                <otherwise>
+                    1 = 0
+                </otherwise>
+            </choose>
+        </where>
+    </update>
+
+</mapper>
