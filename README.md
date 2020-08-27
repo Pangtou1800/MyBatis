@@ -523,3 +523,124 @@
             where id = #{id}
         </select>
 
+## 第六节 缓存机制
+
+    暂时存储一些数据，加快系统的查询速度
+
+    MyBatis缓存机制：
+        内置了一个Map，可以保存一些查询结果
+
+        ·一级缓存 - 线程级别的缓存，也称为本地缓存、SqlSession级别缓存
+        ·二级缓存 - 全局范围的缓存，除当前线程外也可使用，当前SqlSession以外其他也可以使用
+
+    6.1 一级缓存
+
+        ·默认一直存在
+        ·只要之前查询过的数据，MyBatis就会把它保存在一个缓存中，再做相同查询时直接取出结果
+
+        key: hashCode + SqlId + Sql文 + 参数
+
+    6.2 一级缓存失效的几种情况
+
+        1.只有当前SqlSession期间查询到的数才会保存在它的一级缓存中，其他SqlSession无法使用
+
+        2.查询条件变更之后会再次发行SQL
+
+        3.两次查询之间执行任意一次增删改操作，会清空当前SqlSession的缓存
+            ※其他SqlSession即使Commit也不影响当前缓存
+
+        4.调用clearCache()方法清理缓存
+
+    6.2 二级缓存
+
+        全局作用域缓存，默认选项会随着版本发生变化，需要手动配置
+
+        MyBatis提供二级缓存的接口以及实现，缓存实现要求POJO实现Serializable接口
+
+        ※二级缓存在SqlSession关闭或提交之后才会生效
+
+        1.步骤
+            ·全局配置文件开启二级缓存
+                <setting name="cacheEnabled" value="true"/>
+            ·指定缓存对象的Dao - 向SQL映射文件添加一个空cache标签
+                <mapper>
+                    <cache/>
+            ·查询结果对象实现java.io.Serializable接口
+
+        2.说明
+            又称为namespace级别的缓存 - Dao可以自己选择是否开启二级缓存
+
+            <cache>
+                -eviction：缓存回收策略
+                    ·FIFO
+                    ·LRU
+                    ·SOFT
+                    ·WEAK
+                -flushInterval：刷新间隔，单位毫秒
+                -size：引用数目，最大缓存对象数
+                -readOnly：
+                    true表示缓存对象是只读的，直接返回命中对象的引用
+                    false表示缓存中对象可读写，会返回缓存对象的拷贝（通过序列化）
+
+        3.优先级
+
+            二级缓存 > 一级缓存
+
+            多个一级缓存中有相同查询内容时，后关闭的一级缓存会覆盖二级缓存的内容
+
+        4.缓存有关设置
+
+            <setting>
+                cacheEnable
+
+            <mapper>
+                <cache>
+
+            <select>
+                useCache -> 对一级缓存没有影响
+
+            <CRUD
+                flushCache 同时清空一二级缓存，增删改默认true，查询默认false
+
+            sqlSession.clearCache() - 清空以及缓存
+
+    6.3 整合第三方缓存
+
+        用第三方二级缓存替代MyBatis的默认二级缓存
+
+        步骤：
+            实装Cache接口，在方法中连接到专业的缓存库
+
+        
+        Client -> CachingExecutor <=> [decorate Executor] <=> database
+                        ||                  ||
+                        ||              Local Cache
+                        ||
+            ----Configuration -------------------------------
+                    Mapper namspace1    Mapper namspace2
+                      [Cache]               [Cache]
+                        ||                      ||
+                        ||                      ||
+                Third Party Cache
+                    MemCached, OSCache, EHCache...
+
+        练习：
+            整合EHCache
+
+            1.导包
+                ehcache - 核心
+                mybatis-ehcache - MyBatis提供的Cache接口实现
+
+            2.ehcache配置文件
+                encache.xml
+
+            3.指定使用Cache实现类
+                <mapper>
+                    <cache type="Cache实现类">
+
+    6.4 命名空间公用缓存
+
+        <mapper>
+            <cache-ref namespace="">
+
+## 第七节 SSM整合

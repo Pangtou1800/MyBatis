@@ -28,6 +28,110 @@ public class MyBatisTest {
     }
 
     @Test
+    public void test24() {
+        SqlSession sqlSession1 = sqlSessionFactory.openSession();
+        TeacherDao teacherDao = sqlSession1.getMapper(TeacherDao.class);
+
+        Teacher teacher1 = teacherDao.getTeacherById(2);
+
+        SqlSession sqlSession2 = sqlSessionFactory.openSession();
+        TeacherDao teacherDao2 = sqlSession2.getMapper(TeacherDao.class);
+
+        Teacher teacher2 = teacherDao2.getTeacherById(2);
+        teacher2.getId();
+        sqlSession2.close();
+
+        Teacher teacher3 = teacherDao.getTeacherById(2);
+        System.out.println(teacher1 == teacher3);
+    }
+
+    @Test
+    public void test23() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        TeacherDao teacherDao = sqlSession.getMapper(TeacherDao.class);
+
+        Teacher teacher1 = teacherDao.getTeacherById(2);
+        System.out.println(teacher1);
+        sqlSession.close();
+
+        sqlSession = sqlSessionFactory.openSession();
+        teacherDao = sqlSession.getMapper(TeacherDao.class);
+
+        Teacher teacher2 = teacherDao.getTeacherById(2);
+        System.out.println(teacher2);
+        System.out.println(teacher1 == teacher2);
+    }
+
+    @Test
+    public void test22() {
+        SqlSession sqlSession1 = sqlSessionFactory.openSession();
+        TeacherDao teacherDao1 = sqlSession1.getMapper(TeacherDao.class);
+
+        Teacher teacher = teacherDao1.getTeacherById(2);
+        System.out.println(teacher);
+//        sqlSession1.commit();
+
+        SqlSession sqlSession2 = sqlSessionFactory.openSession();
+        TeacherDao teacherDao2 = sqlSession2.getMapper(TeacherDao.class);
+        Teacher teacher2 = new Teacher();
+        teacher2.setId(2);
+        teacher2.setTeacherName("Lucy");
+        teacherDao2.updateTeacher(teacher2);
+        System.out.println(teacher2);
+        sqlSession2.commit();
+
+        Teacher teacher3 = teacherDao1.getTeacherById(2);
+        System.out.println(teacher3);
+        System.out.println(teacher == teacher3);
+
+        sqlSession1.close();
+        sqlSession2.close();
+    }
+
+    @Test
+    public void test21() {
+        SqlSession sqlSession1 = sqlSessionFactory.openSession();
+        TeacherDao teacherDao1 = sqlSession1.getMapper(TeacherDao.class);
+
+        Teacher teacher = teacherDao1.getTeacherById(2);
+        System.out.println(teacher);
+
+        SqlSession sqlSession2 = sqlSessionFactory.openSession();
+        TeacherDao teacherDao2 = sqlSession2.getMapper(TeacherDao.class);
+
+        Teacher teacher2 = teacherDao2.getTeacherById(2);
+        System.out.println(teacher2);
+
+        System.out.println(teacher == teacher2);
+
+        sqlSession1.close();
+        sqlSession2.close();
+    }
+
+    @Test
+    public void test20() {
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        TeacherDao teacherDao = sqlSession.getMapper(TeacherDao.class);
+
+        Teacher teacher = teacherDao.getTeacherById(2);
+        System.out.println(teacher);
+        System.out.println("--------");
+
+        Teacher teacher3 = new Teacher();
+        teacher3.setId(2);
+        teacher3.setTeacherName("Mary");
+        teacherDao.updateTeacher(teacher3);
+
+        Teacher teacher2 = teacherDao.getTeacherById(2);
+        System.out.println(teacher2);
+
+        System.out.println(teacher == teacher2);
+
+        sqlSession.close();
+    }
+
+
+    @Test
     public void test19() {
         SqlSession sqlSession = sqlSessionFactory.openSession();
         TeacherDao teacherDao = sqlSession.getMapper(TeacherDao.class);
@@ -95,7 +199,6 @@ public class MyBatisTest {
 
         sqlSession.close();
     }
-
 
 
     @Test

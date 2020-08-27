@@ -1,8 +1,9 @@
 package pt.joja.bean;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Teacher {
+public class Teacher implements Serializable {
 
     private Integer id;
 
